@@ -19,20 +19,25 @@ const Button = (props) => {
 }
 
 const Statistics = (props) => {
-  if (props.length === 0) {
-    return (
-      <StastRow
-        text={'No feedback given'}
-      />
-    )
-  } else {
-    props.forEach((e) => 
-      <StastRow
-        text={e.text}
-        value={e.value}
-      />
-    )
-  }
+ // if (props.length === 0) {
+   const statistics = [...props.statistics];
+   if (statistics.length === 0 ||
+     statistics.find(e => e.text === 'all').value === 0) {
+     return (
+       <StastRow 
+         text={'No feedback given'}
+       />
+     );
+   } else {
+     return (
+       statistics.map((e, index) => 
+         <StastRow key={index}
+           text={e.text}
+           value={e.value}
+         />
+       )
+     );
+   }
 }
 
 const StastRow = (props) => {
@@ -51,59 +56,94 @@ const App = () => {
     bad: 0
   });
 
- // const [allClicks, setAll] = useState([]);
+  const GOOD = 'good';
+  const NEUTRAL = 'neutral';
+  const BAD = 'bad';
 
-  const statistics = [{text: 'aaa', value: 0},
-                       {text: 'bbb', value: 20}
+  const initArr = [
+                      {text: 'good', value: 0},
+                      {text: 'neutral', value: 0},
+                      {text: 'bad', value: 0},
+                      {text: 'all', value: 0},
+                      {text: 'average', value: 0},
+                      {text: 'positive', value: 0},
                      ];
 
-  const handleGoodClick = () => {
+  const [stastList, setStast] = useState(initArr);
+
+ // const [allClicks, setAll] = useState([]);
+
+  const handleClick =(text) => () => {
+    let goodClick = 0;
+    let neutralClick = 0;
+    let badClick = 0;
+    if (text === 'good') {
+      goodClick = 1;      
+    }
+    if (text === 'neutral') {
+      neutralClick = 1;      
+    }
+    if (text === 'bad') {
+      badClick = 1;      
+    }
     const newClicks = {
       ...clicks,
-      good: clicks.good + 1
+      good: clicks.good + goodClick,
+      neutral: clicks.neutral + neutralClick,
+      bad: clicks.bad + badClick,
+      all: function() {
+        return this.good + this.neutral + this.bad;
+      },
+      average: function() {
+        return (this.good * 1 + this.bad * -1) / this.all();
+      },
+      positive: function() {
+        return this.good / this.all() * 100
+      } 
     }
-    setClicks(newClicks);
-  };
 
-  const handleNeutralClick = () => {
-    const newClicks = {
-      ...clicks,
-      neutral: clicks.neutral + 1
-    }
     setClicks(newClicks);
-  };
 
-  const handleBadClick = () => {
-    const newClicks = {
-      ...clicks,
-      bad: clicks.bad + 1
-    }
-    setClicks(newClicks);
-  };
-
-  const all =() => clicks.good + clicks.neutral + clicks.bad;
-  const average =() => 
-    all() === 0 ? 0 : (clicks.good * 1 + clicks.bad * -1) / all();
-  const positive =() =>
-    all() === 0 ? 0 : clicks.good / all() * 100;
+/*    setStast(stastList
+      .map((e) => {
+        if (e.text === 'good') {
+          return {
+            ...e,
+            value: e.value + 1
+          }
+        } else {
+          return e;
+        }
+      })
+    );
+  */
+    setStast([
+      {text: 'good', value: newClicks.good},
+      {text: 'neutral', value: newClicks.neutral},
+      {text: 'bad', value: newClicks.bad},
+      {text: 'all', value: newClicks.all()},
+      {text: 'average', value: newClicks.average()},
+      {text: 'positive', value: newClicks.positive()},
+    ])
+  }
 
   return (
     <div>
       <Title text={'give feedback'}/>
       <Button 
-        onClick={handleGoodClick}
+        onClick={handleClick('good')}
         text={'good'}
       />
       <Button 
-        onClick={handleNeutralClick}
+        onClick={handleClick('neutral')}
         text={'neutral'}
       />
       <Button 
-        onClick={handleBadClick}
+        onClick={handleClick('bad')}
         text={'bad'}
       />
       <Title text={'statistics'} />
-      <Statistics statistics={statistics} />
+      <Statistics statistics={stastList} />
     </div>
   );
 }
