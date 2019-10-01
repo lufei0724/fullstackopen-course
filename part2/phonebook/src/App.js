@@ -1,104 +1,62 @@
 import React, {useState, useEffect} from 'react';
-import Axios from 'axios';
+import Filter from './components/Filter'
+import AddNewContact from './components/AddNewContact'
+import ContactList from './components/ContactList'
+import contactService from './services/contacts'
 
-const Filter =({filterStr, setFilterStr}) => {
-  return (
-    <div>
-      <label>
-        filter shown with  
-      </label>
-      <input 
-        value={filterStr}
-        onChange={(event)=> setFilterStr(event.target.value)}
-      />
-    </div>
-  )
-}
-
-const PersonForm =(props) => {
-  const {
-    handleFormSubmit,
-    newName,
-    setNewName,
-    newPhone, 
-    setNewPhone
-  } = props
-
-  return (
-    <form onSubmit = {handleFormSubmit}>
-      <div>
-        name: <input 
-          name='name' required 
-          value={newName}
-          onChange={(event)=> setNewName(event.target.value)}
-        />
-      </div>
-      <div>
-        number: <input 
-          name="phone"
-          value={newPhone}
-          onChange={(event)=> setNewPhone(event.target.value)}
-        />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Persons =({persons, filterStr}) => {
-  const re = new RegExp(filterStr, 'i');
-  return (
-    persons.filter((person) => 
-        person.name.match(re)
-      )
-      .map((person) => 
-        <Person 
-          key = {person.name}
-          person = {person}
-        />
-      )
-  )
-}
-
-const Person = ({person}) => {
-  return (
-    <p>
-      {person.name} {person.phone}
-    </p>
-  )
-}
 
 const App =() => {
 
-  const [person, setPersons] = useState([])
-
+  const [contactList, setContactList] = useState([])
+  
   useEffect(() => {
-    Axios
-      .get('http://localhost:3001/persons')
-      .then((response) => {
-        setPersons(response.data);
+    contactService
+      .getAll()
+      .then(initialContacts => {
+        setContactList(initialContacts);
       });
   }, []);
 
-  const [newName, setNewName] = useState('')
-  const [newPhone, setNewPhone] = useState('')
+  const initContact = {
+    'name': '',
+    'number': ''
+  }
+  const [contact, setContact] = useState(initContact)
   const [filterStr, setFilterStr] = useState('')
 
   const handleFormSubmit =(event) => {
     event.preventDefault();
-    if (person.some((e) => e.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-    } else {
-      const newPerson = {'name': newName,
-                         'phone': newPhone
-                        };
-      setPersons(person.concat(newPerson));
-      setNewName('');
-      setNewPhone('');
+    if (contactList.some((e) => e.name === contact.name)) {
+      if (window.confirm(
+        `${contact.name} is already added to the phonebook, ` +
+        `replace the old number with a new one?`)) {
+      const newContact = {...contact, 
+        id:contactList.filter(e => e.name === contact.name)[0].id };
+      contactService
+        .updateContact(newContact)
+        .then(returnedContact => {
+          setContactList(contactList.map(e =>
+            e.name === returnedContact.name ? returnedContact : e));
+        });
+    }} else {
+      contactService
+        .create(contact)
+        .then(returnedContact => {
+           setContactList(contactList.concat(returnedContact));
+        });
+    }
+    setContact(initContact);
+  }
+
+  const handleDeleteContact =(contact) => {
+    if (window.confirm(`Delete ${contact.name}`)) {
+      contactService
+        .deleteContact(contact)
+        .then(setContactList(
+          contactList.filter(e => e.id !== contact.id)));
     }
   }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -107,17 +65,16 @@ const App =() => {
         setFilterStr={setFilterStr}
       />
       <h2>Add a new</h2>
-      <PersonForm 
+      <AddNewContact
         handleFormSubmit={handleFormSubmit}
-        newName={newName}
-        setNewName={setNewName}
-        newPhone={newPhone}
-        setNewPhone={setNewPhone}
+        contact={contact}
+        setContact={setContact}
       />
       <h2>Numbers</h2>
-      <Persons 
-        persons={person}
+      <ContactList 
+        contactList={contactList}
         filterStr={filterStr}
+        handleDeleteContact={handleDeleteContact}
       />
     </div>
   )
