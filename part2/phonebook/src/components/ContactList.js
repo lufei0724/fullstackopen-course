@@ -20,7 +20,7 @@ const ContactList =(props) => {
 const Contact = ({contact, handleDeleteContact}) => {
   return (
     <div>
-      <p>
+      <p className='contact'>
         {contact.name} {contact.number}
         <button 
           onClick={() => handleDeleteContact(contact)}

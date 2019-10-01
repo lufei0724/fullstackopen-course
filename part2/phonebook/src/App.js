@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import Filter from './components/Filter'
 import AddNewContact from './components/AddNewContact'
 import ContactList from './components/ContactList'
+import Notification from './components/Notification'
 import contactService from './services/contacts'
 
 
@@ -13,16 +14,33 @@ const App =() => {
     contactService
       .getAll()
       .then(initialContacts => {
+        console.log(initialContacts)
         setContactList(initialContacts);
       });
   }, []);
 
   const initContact = {
-    'name': '',
-    'number': ''
+    name: '',
+    number: ''
   }
+
+  const initMessage = {
+    content: null,
+    type: null
+  }
+
   const [contact, setContact] = useState(initContact)
   const [filterStr, setFilterStr] = useState('')
+  const [message, setMessage] = useState(initMessage)
+
+  const showNotification =(content, type) => {
+    const newMessage = {content, type};
+    setMessage(newMessage);
+    setTimeout(() =>
+      { setMessage(initMessage) },
+      5000
+    );
+  }
 
   const handleFormSubmit =(event) => {
     event.preventDefault();
@@ -37,12 +55,17 @@ const App =() => {
         .then(returnedContact => {
           setContactList(contactList.map(e =>
             e.name === returnedContact.name ? returnedContact : e));
+        })
+        .catch(error => {
+          showNotification(`Information of ${newContact.name} has already been removed from server`,
+           'error');
         });
     }} else {
       contactService
         .create(contact)
         .then(returnedContact => {
            setContactList(contactList.concat(returnedContact));
+           showNotification(`Added ${returnedContact.name}`, 'into');
         });
     }
     setContact(initContact);
@@ -60,6 +83,9 @@ const App =() => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification 
+        message={message}
+      />
       <Filter 
         filterStr={filterStr}
         setFilterStr={setFilterStr}
