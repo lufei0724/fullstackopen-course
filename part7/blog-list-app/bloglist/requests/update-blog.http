@@ -1,0 +1,9 @@
+PUT http://localhost:3001/api/blogs/5db78602a8a5fe5198444574 HTTP/1.1 
+content-type: application/json
+
+{
+    "title": "I DO KNOW JS",
+    "author": "Kelly Belly ",
+    "url": "www.KB24.com",
+    "likes": 1001
+}

@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/blogs HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJhYnlDaW5vIiwiaWQiOiI1ZGU0MzJiMTc2NTQ5ZjJmOTQ4MGI2M2YiLCJpYXQiOjE1NzUyMzY0MDd9.iAQHDbYlK3ZI9QrkJeUwB3P8Ug65TTdcPR0Ffig0dQM
+
+{
+    "title": "I am gonna go to the beach",
+    "author": "Stephen Lo",
+    "url": "www.espn.com",
+    "likes": 1000
+}
