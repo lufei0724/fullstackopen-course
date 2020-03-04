@@ -6,6 +6,7 @@ import {
 import blogService from '../services/blogs'
 import { updateBlog, removeBlog } from '../redux/blogsRedux'
 import Comments from './Comments'
+import { Typography, Button } from '@material-ui/core'
 
 const BlogDetail = (props) => {
   const { blogId } = useParams() 
@@ -41,13 +42,37 @@ const BlogDetail = (props) => {
     <div>
       { (!blog) ? null : (
         <div>
-          <h1>{blog.title} {blog.author}</h1>      
-          <p>{blog.url}</p>
-          <p>{blog.likes}<button onClick={updateBlogLikes}>like</button></p>
-          <p>added by {blog.user.name}</p>
-          { (props.loginUser.id === blog.user.id) &&
-            <button onClick={handleRemoveBlog}>remove</button>
-          }
+          <Typography variant="h4" component="h1">
+            {blog.title}
+          </Typography>
+          <Typography variant="subtitle2" component="h2">
+            {blog.author}
+          </Typography>
+          <Typography variant="body1" component="div">
+            <p>
+              {blog.url}
+            </p>
+            <p>
+              {blog.likes}
+              <Button 
+                onClick={updateBlogLikes}
+                variant="contained"
+                color="secondary"
+              >
+                like
+              </Button>
+            </p>
+            <p>added by {blog.user.name}</p>
+            { (props.loginUser.id === blog.user.id) &&
+              <Button 
+                onClick={handleRemoveBlog}
+                variant="contained"
+                color="primary"
+              >
+                remove
+              </Button>
+            }
+          </Typography>
           <Comments 
             comments={blog.comments}
             addComment={addNewComment} 

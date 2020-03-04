@@ -1,18 +1,22 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
-  BrowserRouter as Router
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
 } from 'react-router-dom'
 import { setLoginUser } from './redux/loginUserRedux'
+import UserBlogList from './components/UserBlogList'
+import UsersBlogsCount from './components/UsersBlogsCount'
+import BlogDetail from './components/BlogDetail'
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
-import NewBlog from './components/NewBlog'
 import Notification from './components/Notification' 
-import DisplayContainer from './components/DisplayContainer'
 import NavMenu from './components/NavMenu'
 import token from './services/token'
-
+import Container from '@material-ui/core/Container'
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 function App(props) {
   console.log('rendering App')
@@ -32,28 +36,40 @@ function App(props) {
   }
 
   return (
-    <div>
+    <Container component="main" maxWidth="lg">
+      <CssBaseline />
+      <Notification />
       {!props.loginUser ? (
-        <div>
-          <h1>log in to application</h1>
-          <Notification />
-          <LoginForm />
-        </div>
+        <LoginForm />
       ) : (
-        <div>
-          <Router>
-            <NavMenu />
-            <h1>blog app</h1>
-            <Notification />
-            <DisplayContainer />
-            <NewBlog >
-              <BlogForm />
-            </NewBlog>
-            <BlogList />
-            </Router>
-        </div>
+        <Router>
+          <NavMenu />
+          <div style={{marginTop: '100px'}}>
+            <Switch>
+              <Route exact path="/users/:userId" >
+                <UserBlogList />
+              </Route>
+              <Route exact path="/users" >
+                <UsersBlogsCount/>
+              </Route>       
+              <Route exact path="/blogs/:blogId">
+                <BlogDetail />
+              </Route>
+              <Route exact path="/blogs">
+                <BlogList />
+              </Route>
+              <Route exact path="/">
+                <Redirect 
+                  to={{
+                    pathname:"/blogs"
+                  }}
+                />>
+              </Route>
+            </Switch>
+          </div>
+        </Router>
       )}
-    </div>
+    </Container>
   )
 }
 

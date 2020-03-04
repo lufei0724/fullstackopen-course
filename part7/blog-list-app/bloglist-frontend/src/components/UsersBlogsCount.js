@@ -2,9 +2,20 @@ import React, { useState, useEffect } from 'react'
 import userService from '../services/users'
 
 import {
-  Link,
+  Link as RouteLink,
   useRouteMatch
 } from 'react-router-dom'
+import { 
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell,
+  Typography,
+ } from '@material-ui/core'
+import Link from '@material-ui/core/Link'
 
 const UsersBlogsCount = (props) => {
   console.log('rendering UsersBlogsCount')
@@ -19,22 +30,28 @@ const UsersBlogsCount = (props) => {
   }, [])
   
   return (
-    <div> 
-     <table>
-       <tbody>
-         <tr>
-           <th></th>
-           <th>blogs created</th>
-         </tr>
-         {users.map((user) => 
-           <UserInfo 
-               key={user.id}
-               user={user}
-           />
-         )}
-       </tbody>
-     </table> 
-    </div>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>
+              All Users
+            </TableCell>
+            <TableCell>
+              Blogs Created
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users.map((user) => 
+              <UserInfo 
+                key={user.id}
+                user={user}
+              />
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
 
@@ -42,14 +59,26 @@ const UserInfo = (props) => {
   const match = useRouteMatch()
 
   return (
-    <tr>
-      <td>
-        <Link to={`${match.url}/${props.user.id}`} >
-          {props.user.username}
+    <TableRow 
+      hover={true}
+    >
+      <TableCell>
+        <Link 
+          to={`${match.url}/${props.user.id}`} 
+          component={RouteLink}
+        >
+          <Typography 
+            variant="body1" 
+            component="div"
+          >
+            {props.user.username}
+          </Typography>
         </Link> 
-      </td>
-      <td>{props.user.blogs.length}</td>
-    </tr>
+      </TableCell>
+      <TableCell>
+        {props.user.blogs.length}
+      </TableCell>
+    </TableRow>
   )
 }
 

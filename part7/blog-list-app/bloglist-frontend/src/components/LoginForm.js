@@ -5,7 +5,35 @@ import { setLoginUser } from '../redux/loginUserRedux'
 import { useField } from '../hooks/index'
 import loginService from '../services/login'
 import token from '../services/token'
+import Typography from '@material-ui/core/Typography'
+import TextField from '@material-ui/core/TextField'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import CheckBox from '@material-ui/core/Checkbox'
+import Button from '@material-ui/core/Button'
+import Avatar from '@material-ui/core/Avatar'
+import { makeStyles } from '@material-ui/core/styles'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Container from '@material-ui/core/Container'
 
+const useStyles = makeStyles(theme => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display:'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2)
+  }
+}))
 const LoginForm = (props) => {
 
   console.log('rendering loginform')
@@ -29,29 +57,55 @@ const LoginForm = (props) => {
     }
   }
 
+  const classes = useStyles()
 
   return (
-    <div>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="username">username: </label>
-          <input
+    <Container maxWidth="xs" >
+    <div className={classes.paper}>
+      <Avatar className={classes.avatar} >
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" varaiant="h1">
+        Log in to application
+      </Typography>
+      <form onSubmit={handleLogin} className={classes.form} noValidate>
+          <TextField 
             id="username"
-            name="username"  
+            name="username"
+            label="Username"
             {...username.input}
-            required autoFocus></input>
-        </div>
-        <div>
-          <label htmlFor="password">password: </label>
-          <input
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            autoFocus
+            autoComplete="username"
+          />
+          <TextField 
             id="password"
             name="password"
+            label="Password"
             {...password.input}
-            required></input>
-        </div>
-        <button>login</button>
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            autoComplete="current-password"
+          />
+          <FormControlLabel
+            control={<CheckBox value="remeber" color="primary" />}
+            label="Remeber me"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className="classes.submit"
+          >
+            Login
+          </Button>
       </form>
     </div>
+    </Container>
   )
 }
 

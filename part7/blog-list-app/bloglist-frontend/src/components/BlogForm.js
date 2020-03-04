@@ -2,9 +2,23 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { useField } from '../hooks/index'
 import { createBlog } from '../redux/blogsRedux'
+import { Typography, TextField, Button } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+
+const useStyles = makeStyles((theme) => ({
+  form: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+    '& > div > .MuiTextField-root': {
+      width: 300,
+    },
+  },
+}))
 
 const BlogForm = (props) => {
-
+  const { toggleBlogForm } = props
+  const classes = useStyles() 
   const newBlog = {
     title: useField('text'),
     author: useField('text'),
@@ -29,37 +43,49 @@ const BlogForm = (props) => {
 
   return (
     <div>
-      <h2>Create new blog</h2>
-      <form onSubmit={handleCreateNewBlog}>
+      <Typography 
+        variant="h5"
+        component="h2"
+        color="primary"
+      >
+        Create New Blog
+      </Typography>
+      <form 
+        className={classes.form}  
+        onSubmit={handleCreateNewBlog}>
         <div>
-          <label htmlFor="title">title:</label>
-          <input
-            id="title"
-            name="title"
+          <TextField 
+            id="title" 
+            label="Title"
             {...newBlog.title.input}
-          >
-          </input>
+          />
         </div>
         <div>
-          <label htmlFor="author">author:</label>
-          <input
+          <TextField
             id="author"
-            name="author"
+            label="Author"
             {...newBlog.author.input}
-          >
-          </input>
+          />
         </div>
         <div>
-          <label htmlFor="url">url:</label>
-          <input
+          <TextField 
             id="url"
-            name="url"
+            label="Url"
             {...newBlog.url.input}
-          >
-          </input>
+          />
         </div>
         <div>
-          <button>create</button>
+          <Button
+            color="primary"
+          >
+            Create
+          </Button>
+          <Button 
+            onClick={toggleBlogForm}
+            color="secondary"
+          >
+            Cancel
+          </Button>
         </div>
       </form>
     </div>

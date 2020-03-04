@@ -1,21 +1,29 @@
 import React from 'react'
 import {
-  Link,
+  Link as RouteLink,
 } from 'react-router-dom'
-
-import '../css/Blog.css'
+import TableCell from '@material-ui/core/TableCell'
+import Link from '@material-ui/core/Link'
+import { Typography } from '@material-ui/core'
 
 const Blog = (props) => {
   const { blog } = props
 
   return (
-    <div className="blogContainer">
-      <div className="blogHeader" >
-        <Link to={`/blogs/${blog.id}`}>
-          {blog.title} {blog.author}
-        </Link>
-      </div>
-    </div>
+    <TableCell>
+      <Link 
+        component={RouteLink} 
+        to={`/blogs/${blog.id}`}
+        underline="none"
+      >
+        <Typography variant="h6" component="h3">
+          {blog.title}
+        </Typography>
+        <Typography variant="subtitle1" component="p">
+          {blog.author}
+        </Typography >
+      </Link>
+    </TableCell>
   )
 }
 

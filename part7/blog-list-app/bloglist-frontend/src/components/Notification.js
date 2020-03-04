@@ -1,25 +1,31 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import '../css/Notification.css'
+import Alert from '@material-ui/lab/Alert'
+import { makeStyles } from '@material-ui/core/styles'
+
+const useStyle = makeStyles(theme => ({
+  alert: {
+    position: "absolute",
+    bottom: "30px",
+    right: "10px",
+    width: "444px",
+  },
+}))
 
 const Notification = (props) => {
-  console.log('rendering nofification')
   const { message } = props
-  if ( message.text.length === 0 ) {
-    return (
-      <div></div>
-    )
-  }
-
-  let className = 'noti'
-  className =
-    message.type === 'info'
-      ? className.concat(' noti-info')
-      : className.concat(' noti-error')
+  const classes = useStyle()
 
   return (
-    <div className={className}>
-      <p>{message.text}</p>
+    <div>
+      { message.text.length > 0 && 
+        <Alert 
+          severity={message.type}
+          className={classes.alert}
+        >
+          {message.text}
+        </Alert>
+      }
     </div>
   )
 }
