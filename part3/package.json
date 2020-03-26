@@ -1,0 +1,13 @@
+{
+  "name": "Fullstackopen-part3",
+  "version": "1.0.0",
+  "description": "Full stack dev open course ",
+  "scripts": {
+    "build:ui": "cd phonebook-frontend && rm -r build && npm run build",
+    "deploy:ui":"cp -r ./phonebook-frontend/build ./phonebook/.",
+    "deploy": "git add * && git commit -m deployApp && git subtree push --prefix phonebook heroku master",
+    "deploy:full": "npm run build:ui && npm run deploy:ui && npm run deploy"
+  },
+  "author": "Matt Lu",
+  "license": "MIT"
+}
