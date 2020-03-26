@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/blogs HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNwbGFzaG1hbiIsImlkIjoiNWRiZjYwYjBiODFhY2M2ZTY4ZjllOTVkIiwiaWF0IjoxNTcyODM5OTM1fQ.f4OAuQbPPc92Rqe-cxTUyPmtBYO7jnLW_ZV8Y145g-E
+
+{
+    "title": "My face got slamed many times ",
+    "author": "Yang yi",
+    "url": "www.espn.com",
+    "likes": 9000
+}
